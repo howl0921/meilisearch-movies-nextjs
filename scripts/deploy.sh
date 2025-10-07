@@ -13,7 +13,7 @@ fi
 
 # 构建 Docker 镜像
 echo "📦 构建 Docker 镜像..."
-docker build -t moviedb-app:latest .
+docker build -t moviedb-app:latest . --no-cache
 
 # 停止现有容器（如果存在）
 echo "🛑 停止现有容器..."
