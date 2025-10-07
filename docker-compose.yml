@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  moviedb-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      # 添加你的环境变量
+      - MEILISEARCH_API_URL=${MEILISEARCH_API_URL}
+      - MEILISEARCH_API_KEY=${MEILISEARCH_API_KEY}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # 可选：如果你想要本地运行 Meilisearch
+  # meilisearch:
+  #   image: getmeili/meilisearch:v1.5
+  #   ports:
+  #     - "7700:7700"
+  #   environment:
+  #     - MEILI_ENV=production
+  #     - MEILI_MASTER_KEY=your-master-key-here
+  #   volumes:
+  #     - meilisearch_data:/meili_data
+  #   restart: unless-stopped
+
+# volumes:
+#   meilisearch_data:

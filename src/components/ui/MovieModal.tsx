@@ -1,7 +1,7 @@
 import { Calendar, Check, Film, Plus, X } from "lucide-react";
 import Image from "next/image";
 import React from "react";
-import type { Movie } from "@/lib/types";
+import type { Movie } from "@/types";
 import { formatReleaseYear, handleImageError } from "@/utils";
 
 interface MovieModalProps {
@@ -17,26 +17,26 @@ const MovieModal: React.FC<MovieModalProps> = ({
   onToggleWatchlist,
   onClose,
 }) => {
-  if (!movie) return null;
-
-  // 图片错误处理函数已移至 utils
-
   // 添加ESC键关闭模态框的支持
   React.useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
     };
 
-    document.addEventListener('keydown', handleEsc);
+    document.addEventListener("keydown", handleEsc);
     return () => {
-      document.removeEventListener('keydown', handleEsc);
+      document.removeEventListener("keydown", handleEsc);
     };
   }, [onClose]);
 
+  if (!movie) return null;
+
+  // 图片错误处理函数已移至 utils
+
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 modal-backdrop"
       role="dialog"
       aria-modal="true"
@@ -72,13 +72,13 @@ const MovieModal: React.FC<MovieModalProps> = ({
         <div className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h2 id="modal-title" className="text-3xl font-bold mb-2">{movie.title}</h2>
+              <h2 id="modal-title" className="text-3xl font-bold mb-2">
+                {movie.title}
+              </h2>
               <div className="flex items-center space-x-4 text-gray-400">
                 <span className="flex items-center space-x-1">
                   <Calendar className="w-4 h-4" />
-                  <span>
-                    {formatReleaseYear(movie.release_date)}
-                  </span>
+                  <span>{formatReleaseYear(movie.release_date)}</span>
                 </span>
               </div>
             </div>

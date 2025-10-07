@@ -3,13 +3,11 @@
  */
 
 // 日期格式化
-export { formatReleaseYear, formatDate } from "./dateFormatter";
-
-// 图片处理
-export { handleImageError, getImageUrl } from "./imageHandler";
+export { formatDate, formatReleaseYear } from "./dateFormatter";
+// 错误处理
+export { getFriendlyErrorMessage, handleApiError } from "./errorHandler";
 
 // 类型显示
-export { getDisplayGenres, formatGenresText } from "./genreDisplay";
-
-// 错误处理
-export { handleApiError, getFriendlyErrorMessage } from "./errorHandler";
+export { formatGenresText, getDisplayGenres } from "./genreDisplay";
+// 图片处理
+export { getImageUrl, handleImageError } from "./imageHandler";

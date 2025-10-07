@@ -13,7 +13,7 @@ export const handleApiError = (error: unknown): string => {
   if (error instanceof Error) {
     return error.message;
   }
-  return CONFIG.MESSAGES.ERROR.GENERIC_ERROR;
+  return CONFIG.ERRORS.GENERIC;
 };
 
 /**
@@ -23,17 +23,17 @@ export const handleApiError = (error: unknown): string => {
  * @returns 友好的错误消息
  */
 export const getFriendlyErrorMessage = (
-  error: unknown, 
-  fallbackMessage: string = CONFIG.MESSAGES.ERROR.GENERIC_ERROR
+  error: unknown,
+  fallbackMessage: string = CONFIG.ERRORS.GENERIC,
 ): string => {
   if (error instanceof Error) {
     // 检查是否为网络错误
     if (error.message.includes("fetch")) {
-      return CONFIG.MESSAGES.ERROR.NETWORK_ERROR;
+      return CONFIG.ERRORS.NETWORK;
     }
     // 检查是否为超时错误
     if (error.message.includes("timeout")) {
-      return CONFIG.MESSAGES.ERROR.API_ERROR; // 使用通用的API错误消息
+      return CONFIG.ERRORS.API;
     }
     return error.message;
   }

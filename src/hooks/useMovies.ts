@@ -1,22 +1,30 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { CONFIG } from "@/config/constants";
+import type { UseMoviesReturn } from "@/types";
 import { useMovieSearch } from "./useMovieSearch";
 import { useWatchlist } from "./useWatchlist";
-import { CONFIG } from "@/config/constants";
-import type { Movie, UseMoviesReturn } from "@/types";
 
 export const useMovies = (): UseMoviesReturn => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showWatchlist, setShowWatchlist] = useState(false);
 
   // 使用专用的搜索和观看列表 hooks
-  const { movies: searchResults, isLoading, error, searchMovies, clearError } = useMovieSearch();
-  const { watchlist, isInWatchlist, toggleWatchlist, getWatchlistCount } = useWatchlist();
+  const {
+    movies: searchResults,
+    isLoading,
+    searchMovies,
+    clearError,
+  } = useMovieSearch();
+  const { watchlist, isInWatchlist, toggleWatchlist } = useWatchlist();
 
-  // 防抖搜索
+  // 防抖搜索（包括初始化）
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      searchMovies(searchTerm);
-    }, CONFIG.SEARCH.DEBOUNCE_DELAY);
+    const timeoutId = setTimeout(
+      () => {
+        searchMovies(searchTerm);
+      },
+      searchTerm === "" ? 0 : CONFIG.SEARCH_DEBOUNCE,
+    ); // 初始加载不延迟
 
     return () => clearTimeout(timeoutId);
   }, [searchTerm, searchMovies]);
@@ -33,15 +41,18 @@ export const useMovies = (): UseMoviesReturn => {
   }, [searchResults, showWatchlist, watchlist]);
 
   // 处理搜索词变化
-  const handleSearchTermChange = useCallback((value: string) => {
-    setSearchTerm(value);
-    clearError();
+  const handleSearchTermChange = useCallback(
+    (value: string) => {
+      setSearchTerm(value);
+      clearError();
 
-    // 如果切换到观看列表视图，重置搜索
-    if (showWatchlist && value.trim()) {
-      setShowWatchlist(false);
-    }
-  }, [showWatchlist, clearError]);
+      // 如果切换到观看列表视图，重置搜索
+      if (showWatchlist && value.trim()) {
+        setShowWatchlist(false);
+      }
+    },
+    [showWatchlist, clearError],
+  );
 
   // 处理观看列表切换
   const handleToggleWatchlist = useCallback(() => {
@@ -53,8 +64,8 @@ export const useMovies = (): UseMoviesReturn => {
     clearError();
   }, [showWatchlist, clearError]);
 
-  // 获取观看列表数量
-  const watchlistCount = getWatchlistCount();
+  // 获取观看列表数量 (暂时未使用)
+  // const watchlistCount = getWatchlistCount();
 
   return {
     movies,

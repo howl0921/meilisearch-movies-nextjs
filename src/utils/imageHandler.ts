@@ -6,10 +6,12 @@
  * 处理图片加载错误，显示占位符
  * @param e - 图片加载错误事件
  */
-export const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>): void => {
+export const handleImageError = (
+  e: React.SyntheticEvent<HTMLImageElement>,
+): void => {
   const target = e.target as HTMLImageElement;
   target.style.display = "none";
-  
+
   const placeholder = target.nextElementSibling as HTMLElement;
   if (placeholder) {
     placeholder.classList.remove("hidden");
