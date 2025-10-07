@@ -17,11 +17,11 @@ docker build -t moviedb-app:latest . --no-cache
 
 # 停止现有容器（如果存在）
 echo "🛑 停止现有容器..."
-docker-compose down || true
+docker compose down || true
 
 # 启动新容器
 echo "🚀 启动新容器..."
-docker-compose up -d
+docker compose up -d
 
 # 等待应用启动
 echo "⏳ 等待应用启动..."
