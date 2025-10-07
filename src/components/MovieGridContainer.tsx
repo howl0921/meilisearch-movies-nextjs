@@ -6,7 +6,7 @@ import MovieCardSkeleton from "@/components/ui/MovieCardSkeleton";
 import { CONFIG } from "@/config/constants";
 import type { Movie } from "@/types";
 
-// 骨架屏现在动态生成，不需要预定义数组
+// 骨架屏是静态占位符，不会重新排序，使用索引是安全的
 
 interface MovieGridContainerProps {
   movies: Movie[];
@@ -35,9 +35,10 @@ const MovieGridContainer: React.FC<MovieGridContainerProps> = ({
   const renderGridItems = () => {
     if (isLoading) {
       // 加载中：显示动态数量的骨架屏
-      // 使用随机 ID 避免 array index 警告
-      return Array.from({ length: expectedCount }, () => (
-        <MovieCardSkeleton key={crypto.randomUUID()} />
+      // 骨架屏是静态占位符，不会重新排序，使用索引是安全的
+      // eslint-disable-next-line react/no-array-index-key
+      return Array.from({ length: expectedCount }, (_, i) => (
+        <MovieCardSkeleton key={i} />
       ));
     }
 
