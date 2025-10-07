@@ -10,6 +10,15 @@
   flex-direction: column;
   aspect-ratio: 2 / 3.5;
   height: 100%;
+  min-height: 280px; /* 确保最小高度 */
+}
+
+/* 小屏幕优化 */
+@media (max-width: 480px) {
+  .movie-card {
+    min-height: 260px;
+    aspect-ratio: 2 / 3.2; /* 稍微调整比例 */
+  }
 }
 
 .movie-card:hover {
@@ -35,6 +44,13 @@
   overflow: hidden;
   width: 100%;
   min-height: 0; /* 防止flex子元素撑开父容器 */
+}
+
+/* 小屏幕海报优化 */
+@media (max-width: 480px) {
+  .movie-poster {
+    aspect-ratio: 2 / 2.8; /* 稍微调整比例适应小屏 */
+  }
 }
 
 /* 按钮样式 */
@@ -113,33 +129,53 @@
   background-color: rgba(0, 0, 0, 0.75);
 }
 
-/* 网格布局 */
+/* 响应式网格布局 - 确保最小两列 */
 .grid-responsive {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1.5rem;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr); /* 手机端：固定2列 */
 }
 
+/* 小屏手机 (320px+) */
+@media (min-width: 320px) {
+  .grid-responsive {
+    gap: 1.25rem;
+    grid-template-columns: repeat(2, 1fr); /* 保持2列 */
+  }
+}
+
+/* 大屏手机 (480px+) */
+@media (min-width: 480px) {
+  .grid-responsive {
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* 自适应，最小180px */
+  }
+}
+
+/* 平板竖屏 (640px+) */
 @media (min-width: 640px) {
   .grid-responsive {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 }
 
+/* 平板横屏 (768px+) */
 @media (min-width: 768px) {
-  .grid-responsive {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  }
-}
-
-@media (min-width: 1024px) {
   .grid-responsive {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
 }
 
+/* 桌面端 (1024px+) */
+@media (min-width: 1024px) {
+  .grid-responsive {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
+
+/* 大屏桌面 (1280px+) */
 @media (min-width: 1280px) {
   .grid-responsive {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
 }
