@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MovieDB - 电影数据库
 
-## Getting Started
+这是一个使用Next.js构建的电影数据库应用，允许用户搜索电影、查看详细信息并管理观看列表。
 
-First, run the development server:
+## 功能特性
+
+- 电影搜索功能
+- 电影详情查看
+- 观看列表管理
+- 响应式设计
+- 暗色主题
+
+## 技术栈
+
+- Next.js 15
+- React 19
+- TypeScript
+- Tailwind CSS
+- Lucide React Icons
+
+## 环境要求
+
+- Node.js 18+
+- pnpm
+
+## 安装步骤
+
+1. 克隆项目仓库
+2. 安装依赖：
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. 配置环境变量（参考 `.env.example` 文件）
+4. 启动开发服务器：
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. 在浏览器中打开 [http://localhost:3000](http://localhost:3000)
 
-## Learn More
+## 环境变量配置
 
-To learn more about Next.js, take a look at the following resources:
+请参考 `.env.example` 文件配置必要的环境变量。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 部署
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+可以使用 Vercel 或其他支持 Next.js 的平台进行部署。

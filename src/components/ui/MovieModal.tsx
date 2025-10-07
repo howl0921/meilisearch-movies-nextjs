@@ -1,7 +1,8 @@
 import { Calendar, Check, Film, Plus, X } from "lucide-react";
 import Image from "next/image";
-import type React from "react";
+import React from "react";
 import type { Movie } from "@/lib/types";
+import { formatReleaseYear, handleImageError } from "@/utils";
 
 interface MovieModalProps {
   movie: Movie | null;
@@ -18,17 +19,29 @@ const MovieModal: React.FC<MovieModalProps> = ({
 }) => {
   if (!movie) return null;
 
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const target = e.target as HTMLImageElement;
-    target.style.display = "none";
-    const placeholder = target.nextElementSibling as HTMLElement;
-    if (placeholder) {
-      placeholder.classList.remove("hidden");
-    }
-  };
+  // 图片错误处理函数已移至 utils
+
+  // 添加ESC键关闭模态框的支持
+  React.useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEsc);
+    return () => {
+      document.removeEventListener('keydown', handleEsc);
+    };
+  }, [onClose]);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 modal-backdrop">
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
       <div className="bg-gray-800 rounded-lg max-w-3xl w-full max-h-screen overflow-y-auto">
         <div className="relative">
           <div className="h-64 flex items-center justify-center bg-gray-700">
@@ -50,6 +63,7 @@ const MovieModal: React.FC<MovieModalProps> = ({
             type="button"
             onClick={onClose}
             className="absolute top-4 right-4 p-2 bg-black bg-opacity-50 rounded-full hover:bg-opacity-75"
+            aria-label="关闭"
           >
             <X className="w-6 h-6" />
           </button>
@@ -58,12 +72,12 @@ const MovieModal: React.FC<MovieModalProps> = ({
         <div className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h2 className="text-3xl font-bold mb-2">{movie.title}</h2>
+              <h2 id="modal-title" className="text-3xl font-bold mb-2">{movie.title}</h2>
               <div className="flex items-center space-x-4 text-gray-400">
                 <span className="flex items-center space-x-1">
                   <Calendar className="w-4 h-4" />
                   <span>
-                    {new Date(movie.release_date * 1000).getFullYear()}
+                    {formatReleaseYear(movie.release_date)}
                   </span>
                 </span>
               </div>
@@ -80,12 +94,12 @@ const MovieModal: React.FC<MovieModalProps> = ({
               {isInWatchlist ? (
                 <>
                   <Check className="w-5 h-5" />
-                  <span>In Watchlist</span>
+                  <span>已添加到观看列表</span>
                 </>
               ) : (
                 <>
                   <Plus className="w-5 h-5" />
-                  <span>Add to Watchlist</span>
+                  <span>添加到观看列表</span>
                 </>
               )}
             </button>
@@ -104,7 +118,7 @@ const MovieModal: React.FC<MovieModalProps> = ({
 
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-semibold mb-2">Overview</h3>
+              <h3 className="text-lg font-semibold mb-2">简介</h3>
               <p className="text-gray-300 leading-relaxed">{movie.overview}</p>
             </div>
           </div>

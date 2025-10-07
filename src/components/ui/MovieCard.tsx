@@ -1,7 +1,8 @@
 import { Film, Heart } from "lucide-react";
-import Image from "next/image";
 import type React from "react";
 import type { Movie } from "@/lib/types";
+import { useImageFallback } from "@/hooks/useImageFallback";
+import { formatReleaseYear, getDisplayGenres } from "@/utils";
 
 interface MovieCardProps {
   movie: Movie;
@@ -16,6 +17,8 @@ const MovieCard: React.FC<MovieCardProps> = ({
   onToggleWatchlist,
   onClick,
 }) => {
+  const { handleImageError } = useImageFallback();
+
   const handleWatchlistClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onToggleWatchlist(movie.id);
@@ -25,30 +28,27 @@ const MovieCard: React.FC<MovieCardProps> = ({
     onClick(movie);
   };
 
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const target = e.target as HTMLImageElement;
-    target.style.display = "none";
-    const placeholder = target.nextElementSibling as HTMLElement;
-    if (placeholder) {
-      placeholder.classList.remove("hidden");
-    }
-  };
-
   return (
-    <button
-      type="button"
+    <div
       className="movie-card cursor-pointer text-left"
       onClick={handleCardClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleCardClick();
+        }
+      }}
     >
       <div className="movie-poster relative">
         {movie.poster ? (
-          <Image
+          <img
             src={movie.poster}
             alt={movie.title}
-            width={300}
-            height={450}
             className="w-full h-full object-cover"
             onError={handleImageError}
+            loading="lazy"
           />
         ) : null}
         <Film
@@ -59,6 +59,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
           type="button"
           onClick={handleWatchlistClick}
           className="absolute top-2 right-2 p-2 bg-black bg-opacity-50 rounded-full hover:bg-opacity-75 transition-colors"
+          aria-label={isInWatchlist ? "从观看列表移除" : "添加到观看列表"}
         >
           <Heart
             className={`w-5 h-5 ${isInWatchlist ? "fill-red-500 text-red-500" : "text-white"}`}
@@ -71,10 +72,10 @@ const MovieCard: React.FC<MovieCardProps> = ({
           {movie.title}
         </h3>
         <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
-          <span>{new Date(movie.release_date * 1000).getFullYear()}</span>
+          <span>{formatReleaseYear(movie.release_date)}</span>
         </div>
         <div className="flex flex-wrap gap-1">
-          {movie.genres.slice(0, 1).map((genre: string) => (
+          {getDisplayGenres(movie.genres, 1).map((genre: string) => (
             <span
               key={genre}
               className="text-xs px-1.5 py-0.5 bg-gray-700 rounded"
@@ -84,7 +85,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
           ))}
         </div>
       </div>
-    </button>
+    </div>
   );
 };
 

@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* 导入模块化样式 */
+@import "../styles/components.css";
+@import "../styles/animations.css";
+
 /* 添加自定义样式增强视觉效果 */
 @layer base {
   html {
@@ -9,20 +13,6 @@
   body {
     font-family: "Inter", system-ui, -apple-system, sans-serif;
   }
-}
-
-/* 电影卡片悬停效果 */
-.movie-card {
-  background-color: rgb(31 41 55);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  transform: translateY(0);
-  display: flex;
-  flex-direction: column;
-  aspect-ratio: 2 / 3.5;
-  height: 100%;
 }
 
 /* 文本截断样式 */
@@ -35,114 +25,112 @@
   min-height: 1.5rem; /* 适应紧凑布局 */
 }
 
-.movie-card:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.3),
-    0 10px 10px -5px rgba(0, 0, 0, 0.2),
-    0 0 0 2px rgb(59 130 246);
+/* 骨架屏动画优化 */
+.animate-shimmer {
+  animation: shimmer 1.5s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  background-size: 200px 100%;
 }
 
-/* 美化按钮 */
-.btn-primary {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  transition: all 0.2s ease;
-  font-weight: 500;
-}
-
-.btn-primary:hover {
-  transform: scale(1.05);
-}
-
-/* 电影海报容器 */
-.movie-poster {
-  aspect-ratio: 2 / 3;
+/* 额外的自定义样式 */
+.modal-container {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modal-content-wrapper {
   position: relative;
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.1) 0%,
-    rgba(147, 51, 234, 0.1) 100%
-  );
-  overflow: hidden;
+  z-index: 10;
+  background-color: rgb(31 41 55);
+  border-radius: 0.5rem;
+  max-width: 48rem;
+  width: 100%;
+  max-height: 100vh;
+  overflow-y: auto;
+  margin: 1rem;
+}
+
+/* 搜索框容器 */
+.search-container {
+  position: relative;
+  max-width: 28rem;
   flex: 1;
 }
 
-/* 模态框背景 */
-.modal-backdrop {
-  backdrop-filter: blur(4px);
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgb(156 163 175);
+  pointer-events: none;
 }
 
-/* 确保grid布局正常工作 */
-.grid-responsive {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1.5rem;
+/* 按钮组样式 */
+.button-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-@media (min-width: 640px) {
-  .grid-responsive {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+/* 响应式工具类 */
+@media (max-width: 640px) {
+  .mobile-hidden {
+    display: none;
   }
 }
 
-@media (min-width: 768px) {
-  .grid-responsive {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+@media (min-width: 641px) {
+  .mobile-only {
+    display: none;
   }
 }
 
-@media (min-width: 1024px) {
-  .grid-responsive {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  }
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-@media (min-width: 1280px) {
-  .grid-responsive {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
+::-webkit-scrollbar-track {
+  background: rgb(31 41 55);
 }
 
-/* 淡入动画 */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+::-webkit-scrollbar-thumb {
+  background: rgb(75 85 99);
+  border-radius: 4px;
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-out;
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(107 114 128);
 }
 
-/* 骨架屏动画优化 */
-@keyframes shimmer {
-  0% {
-    background-position: -200px 0;
-  }
-  100% {
-    background-position: calc(200px + 100%) 0;
-  }
+/* 焦点样式 */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900;
 }
 
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+/* 加载状态 */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
 }

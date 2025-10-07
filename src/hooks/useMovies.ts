@@ -1,75 +1,69 @@
-import { useEffect, useMemo, useState } from "react";
-import { fetchMovies } from "@/lib/api";
-import type { Movie } from "@/lib/types";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useMovieSearch } from "./useMovieSearch";
+import { useWatchlist } from "./useWatchlist";
+import { CONFIG } from "@/config/constants";
+import type { Movie, UseMoviesReturn } from "@/types";
 
-export const useMovies = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+export const useMovies = (): UseMoviesReturn => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [watchlist, setWatchlist] = useState<number[]>([]);
   const [showWatchlist, setShowWatchlist] = useState(false);
 
-  // 加载初始电影数据
-  useEffect(() => {
-    const loadMovies = async () => {
-      setIsLoading(true);
-      const movieData = await fetchMovies();
-      setMovies(movieData);
-      setIsLoading(false);
-    };
-    loadMovies();
-  }, []);
+  // 使用专用的搜索和观看列表 hooks
+  const { movies: searchResults, isLoading, error, searchMovies, clearError } = useMovieSearch();
+  const { watchlist, isInWatchlist, toggleWatchlist, getWatchlistCount } = useWatchlist();
 
-  // 搜索功能 - 优化防抖时间到500ms
+  // 防抖搜索
   useEffect(() => {
-    const searchMovies = async () => {
-      if (searchTerm.trim()) {
-        setIsLoading(true);
-        const searchResults = await fetchMovies(searchTerm);
-        setMovies(searchResults);
-        setIsLoading(false);
-      } else {
-        // 如果搜索框为空，重新加载所有电影
-        const allMovies = await fetchMovies();
-        setMovies(allMovies);
-      }
-    };
+    const timeoutId = setTimeout(() => {
+      searchMovies(searchTerm);
+    }, CONFIG.SEARCH.DEBOUNCE_DELAY);
 
-    const timeoutId = setTimeout(searchMovies, 500);
     return () => clearTimeout(timeoutId);
-  }, [searchTerm]);
+  }, [searchTerm, searchMovies]);
 
-  // 过滤电影
-  const filteredMovies = useMemo(() => {
-    let filtered = [...movies];
+  // 过滤电影逻辑
+  const movies = useMemo(() => {
+    let filtered = [...searchResults];
 
     if (showWatchlist) {
       filtered = filtered.filter((movie) => watchlist.includes(movie.id));
     }
 
     return filtered;
-  }, [movies, showWatchlist, watchlist]);
+  }, [searchResults, showWatchlist, watchlist]);
 
-  // 切换收藏状态
-  const toggleWatchlist = (movieId: number) => {
-    setWatchlist((prev) =>
-      prev.includes(movieId)
-        ? prev.filter((id) => id !== movieId)
-        : [...prev, movieId],
-    );
-  };
+  // 处理搜索词变化
+  const handleSearchTermChange = useCallback((value: string) => {
+    setSearchTerm(value);
+    clearError();
 
-  // 检查是否在收藏列表中
-  const isInWatchlist = (movieId: number) => watchlist.includes(movieId);
+    // 如果切换到观看列表视图，重置搜索
+    if (showWatchlist && value.trim()) {
+      setShowWatchlist(false);
+    }
+  }, [showWatchlist, clearError]);
+
+  // 处理观看列表切换
+  const handleToggleWatchlist = useCallback(() => {
+    setShowWatchlist((prev) => !prev);
+    if (!showWatchlist) {
+      // 切换到观看列表时清空搜索
+      setSearchTerm("");
+    }
+    clearError();
+  }, [showWatchlist, clearError]);
+
+  // 获取观看列表数量
+  const watchlistCount = getWatchlistCount();
 
   return {
-    movies: filteredMovies,
+    movies,
     searchTerm,
-    setSearchTerm,
+    setSearchTerm: handleSearchTermChange,
     isLoading,
     watchlist,
     showWatchlist,
-    setShowWatchlist,
+    setShowWatchlist: handleToggleWatchlist,
     toggleWatchlist,
     isInWatchlist,
   };

@@ -5,13 +5,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "image.tmdb.org",
       },
-      {
-        protocol: "http",
-        hostname: "**",
-      },
+      // 移除过于宽松的模式，只保留必要的域名
     ],
+    domains: ["image.tmdb.org"],
   },
 };
 

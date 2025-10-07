@@ -2,7 +2,7 @@ import type { Movie } from "./types";
 
 export async function fetchMovies(
   query: string = "",
-  limit: number = 100,
+  limit: number = 15,
 ): Promise<Movie[]> {
   try {
     const params = new URLSearchParams({
@@ -17,7 +17,7 @@ export async function fetchMovies(
     }
 
     const data = await response.json();
-    return data.movies || [];
+    return Array.isArray(data) ? data : data.movies || [];
   } catch (error) {
     console.error("Error fetching movies:", error);
     return [];
